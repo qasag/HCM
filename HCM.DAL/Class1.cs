@@ -8,5 +8,10 @@ namespace HCM.DAL
 {
     public class Class1
     {
+		
+		
+		
+		
+		
     }
 }
