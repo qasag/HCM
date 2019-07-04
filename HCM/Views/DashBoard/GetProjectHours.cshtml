@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "GetProjectHours";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/highcharts.js" type="text/javascript"></script>
+<script src="~/Scripts/exporting.js" type="text/javascript"></script>
+<script src="~/Scripts/export-data.js" type="text/javascript"></script>
+
+<script src="~/Scripts/DashBoard/appProjectHours.js" type="text/javascript"></script>
+
+<style>
+    .highcharts-exporting-group, .highcharts-title, .highcharts-credits {
+        display: none;
+    }
+</style>
+
+<div class="row" data-ng-controller="ProjectHoursController">
+
+    <div class="body_wrapper container">
+
+        <div class="section" style="padding: 10px 0 0 0;">
+
+            <div class="row">
+
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <i class="material-icons left">hourglass_empty</i> Project Hours                                     
+                                    <div class="clear"></div>
+                            </span>
+                            <div class="min_height_table" style="height: 300px; min-height: 300px;">
+                                <table class="responsive-table striped low_td_padding">
+                                    <thead>
+                                        <tr style="background-color: #f2f2f2;">
+                                            <th data-ng-click="sortBy('Product.ProductName')"><span class="left">Product</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('Module.ModuleName')"><span class="left">Module</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('WorkStream.WorkStreamName')"><span class="left">WorkStream</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('Area.AreaName')"><span class="left">Area</span> <i class="material-icons">unfold_more</i></th>
+
+                                            <th data-ng-click="sortBy('ProjectManagement')"><span class="left">Project Management</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('ChangeManagement')"><span class="left">Change Management</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('BusinessAnalyst')"><span class="left">Business Analyst</span> <i class="material-icons">unfold_more</i></th>
+
+                                            <th data-ng-click="sortBy('Configuration')"><span class="left">Configuration</span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('Testing')"><span class="left">Testing </span><i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('Training')"><span class="left">Training</span> <i class="material-icons">unfold_more</i></th>
+                                            <th data-ng-click="sortBy('TotalHours')"><span class="left">Total Hours</span> <i class="material-icons">unfold_more</i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr data-ng-repeat="prjectHours in FinancialProjectHoursListModel | orderBy:sortpropertyName:sortorder">
+                                           
+                                            <td>{{prjectHours.Product.ProductName}}</td>
+                                            <td>{{prjectHours.Module.ModuleName}}</td>
+                                            <td>{{prjectHours.WorkStream.WorkStreamName}}</td>
+                                            <td>{{prjectHours.Area.AreaName}}</td>
+                                            <td>{{prjectHours.ProjectManagement | number}}</td>
+                                            <td>{{prjectHours.ChangeManagement | number}}</td>
+                                            <td>{{prjectHours.BusinessAnalyst | number}}</td>
+                                            <td>{{prjectHours.Configuration | number}}</td>
+                                            <td>{{prjectHours.Testing | number}}</td>
+                                            <td>{{prjectHours.Training | number}}</td>
+                                            <td>{{prjectHours.TotalHours | number}}</td>
+                                        </tr>
+
+                                        <tr class="summary_row" data-ng-repeat="prjectHours in FinancialProjectHoursListSummaryModel">
+                                            <td colspan="4" style="text-align: center;">{{prjectHours.Area.AreaName}}</td>
+                                            <td>{{prjectHours.ProjectManagement | number}}</td>
+                                            <td>{{prjectHours.ChangeManagement | number}}</td>
+                                            <td>{{prjectHours.BusinessAnalyst | number}}</td>
+                                            <td>{{prjectHours.Configuration | number}}</td>
+                                            <td>{{prjectHours.Testing | number}}</td>
+                                            <td>{{prjectHours.Training | number}}</td>
+                                            <td>{{prjectHours.TotalHours | number}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <i class="material-icons left">insert_chart</i>  Project Hours Chart                                       
+                                    <div class="clear"></div>
+                            </span>
+
+                            <div id="ProjectHours" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        @Html.Hidden("GetDashBoardFinancialProjectHours", Url.Action("GetDashBoardFinancialProjectHours", "DashBoard"))
+
+        @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+        @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+    </div>
+
+</div>
+
+

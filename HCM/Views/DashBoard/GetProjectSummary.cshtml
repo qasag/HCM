@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "GetProjectSummary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/highcharts.js" type="text/javascript"></script>
+<script src="~/Scripts/exporting.js" type="text/javascript"></script>
+<script src="~/Scripts/export-data.js" type="text/javascript"></script>
+
+<script src="~/Scripts/DashBoard/appProjectSummary.js" type="text/javascript"></script>
+
+<style>
+    .highcharts-exporting-group, .highcharts-title, .highcharts-credits {
+        display: none;
+    }
+</style>
+
+<div class="row" data-ng-controller="PrjectSummaryController">
+
+    <div class="body_wrapper container">
+
+        <div class="section" style="padding: 10px 0 0 0;">
+
+            <div class="row">
+
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <i class="material-icons left">library_books</i> Project Summary                                     
+                                    <div class="clear"></div>
+                            </span>
+                            <div class="min_height_table" style="height: 180px; min-height: 180px;">
+                                <table class="responsive-table striped low_td_padding">
+                                    <thead>
+                                        <tr style="background-color: #f2f2f2;">
+                                            <th><span class="left">Summary </span></th>
+                                            <th><span class="left">Project Initiation</span></th>
+                                            <th><span class="left">Requirement Gathering</span></th>
+
+                                            <th><span class="left">Development</span></th>
+                                            <th><span class="left">Testing </span></th>
+                                            <th><span class="left">Training</span></th>
+
+                                            <th><span class="left">Rollout</span></th>
+                                            <th><span class="left">Total</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr data-ng-repeat="prjectSumry in ProjectSummaryListModel">
+                                            <td>{{prjectSumry.ProjectSummaryName}}</td>
+                                            <td>{{prjectSumry.ProjectInitiation}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.RequirementGathering}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.Development}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.Testing}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.Training}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.RollOut}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                            <td>{{prjectSumry.Total}}<span data-ng-if="prjectSumry.ProjectSummaryName == 'Project Phase'">%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <i class="material-icons left">insert_chart</i> Project Summary Chart                                    
+                                    <div class="clear"></div>
+                            </span>
+
+                            <div id="ProjectSummary" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        @Html.Hidden("GetProjectSummaryData", Url.Action("GetProjectSummaryData", "DashBoard"))
+
+        @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+        @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+    </div>
+
+</div>

@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "GetDurations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appGetDuration.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetDurationController">
+
+    <header>
+
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li class="active"><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="row">
+
+        <div class="body_wrapper container">
+            <div class="section">
+
+                <div class="row">
+
+                    <div id="users_tab" class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">timer</i> Duration                                      
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped low_td_padding">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('ProjectSummaryName')"><span class="left">Duration Name </span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('ProjectInitiation')"><span class="left">Project Initiation</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('RequirementGathering')"><span class="left">Requirement Gathering</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Development')"><span class="left">Development</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Testing')"><span class="left">Testing</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Training')"><span class="left">Training</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('RollOut')"><span class="left">Rollout</span> <i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="duration in DurationListModel | orderBy:sortpropertyName:sortorder">
+                                                <td>{{duration.ProjectSummaryName}}</td>
+                                                <td>{{duration.ProjectInitiation}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td>{{duration.RequirementGathering}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td>{{duration.Development}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td>{{duration.Testing}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td>{{duration.Training}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td>{{duration.RollOut}}<span data-ng-if="duration.ProjectSummaryName == 'Project Phases'">%</span></td>
+                                                <td><a href="#Edit_Duration" class="modal-trigger" data-ng-click="EditDuration($index,duration)"><i class="material-icons">edit</i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Edit Duration popups start-->
+            <div id="Edit_Duration" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Edit Duration</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field">
+                                    <input id="duration_name" type="text" data-ng-model="DurationModel['ProjectSummaryName']" maxlength="50" disabled="disabled">
+                                    <label ng-class="{'active': DurationModel.ProjectSummaryName}" for="duration_name">Duration Name</label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="project_init" type="text" class="validate" data-ng-model="DurationModel['ProjectInitiation']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.ProjectInitiation}" for="project_init">Project Initiation<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="requirement_gather" type="text" class="validate" data-ng-model="DurationModel['RequirementGathering']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.RequirementGathering}" for="requirement_gather">Requirement Gathering<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="development" type="text" class="validate" data-ng-model="DurationModel['Development']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.Development}" for="development">Development<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="testing" type="text" class="validate" data-ng-model="DurationModel['Testing']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.Testing}" for="testing">Testing<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="training" type="text" class="validate" data-ng-model="DurationModel['Training']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.Training}" for="training">Legend Percent<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="rollout" type="text" class="validate" data-ng-model="DurationModel['RollOut']" maxlength="10" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                    <label ng-class="{'active': DurationModel.RollOut}" for="rollout">Rollout<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="DurationCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="UpdateDurationClick()">Update</a>
+                </div>
+            </div>
+            <!--Edit Duration popups close-->
+
+        </div>
+    </div>
+
+    @Html.Hidden("GetAllDurations", Url.Action("GetAllDurations", "Admin"))
+    @Html.Hidden("UpdateDuration", Url.Action("UpdateDuration", "Admin"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>

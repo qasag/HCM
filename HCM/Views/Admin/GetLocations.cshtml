@@ -1,0 +1,226 @@
+﻿@{
+    ViewBag.Title = "GetLocations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appLocation.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetLocationsController">
+
+    <header>
+
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li class="active"><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+
+    </header>
+
+    <div class="row">
+        <div class="body_wrapper container">
+            <div class="section">
+
+                <div class="row">
+
+                    <div id="users_tab" class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">location_on</i> Location
+                                      <a href="#addnew_location" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewLocationClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped low_td_padding">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('LocationName')"><span class="left">Location</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Country.CountryName')"><span class="left">Country</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Country.Region.RegionCode')"><span class="left">Region</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('LocationDescription')"><span class="left">Location Description</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')"><span class="left">Status</span> <i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="location in LocationListModel | orderBy:sortpropertyName:sortorder">
+                                                <td style="display: none;">{{location.LocationID}}</td>
+                                                <td style="display: none;">{{location.Country.Region.RegionID}}</td>
+                                                <td style="display: none;">{{location.Country.CountryID}}</td>
+                                                <td>{{location.LocationName}}</td>
+                                                <td>{{location.Country.CountryName}}</td>
+                                                <td>{{location.Country.Region.RegionCode}}</td>
+                                                <td>{{location.LocationDescription}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="location.Status == 1">check</i></td>
+                                                <td><a href="#Edit_location" class="modal-trigger" data-ng-click="EditLocation($index,location)"><i class="material-icons">edit</i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Create Location popups start-->
+            <div id="addnew_location" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Add Location</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field">
+                                    <select data-ng-model="LocationModel['RegionID']"
+                                        data-ng-options="obj.RegionID as obj.RegionCode for obj in RegionsListModel"
+                                        data-ng-change="GetCountryBasedOnRegionID(LocationModel.RegionID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Region<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="LocationModel['CountryID']"
+                                        data-ng-options="obj.CountryID as obj.CountryName for obj in CountriesListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Country<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="location_name" type="text" class="validate" data-ng-model="LocationModel['LocationName']" maxlength="50">
+                                    <label for="location_name">Location Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="location_desc" type="text" class="validate" data-ng-model="LocationModel['LocationDescription']" maxlength="100">
+                                    <label for="location_desc">Location Description</label>
+                                </div>
+
+                                <div class="input-field">
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                            <span>Status</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SaveCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertAndUpdateLocationClick()">Save</a>
+                </div>
+            </div>
+            <!--Create Location popups close-->
+
+            <!--Edit Location popups start-->
+            <div id="Edit_location" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Edit Location</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field">
+                                    <select data-ng-model="LocationModel['RegionID']"
+                                        data-ng-options="obj.RegionID as obj.RegionCode for obj in RegionsListModel"
+                                        data-ng-change="GetCountryBasedOnRegionID(LocationModel.RegionID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Region<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="LocationModel['CountryID']"
+                                        data-ng-options="obj.CountryID as obj.CountryName for obj in CountriesListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Country<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="location_name1" type="text" class="validate" data-ng-model="LocationModel['LocationName']" maxlength="50">
+                                    <label for="location_name1">Location Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="location_desc1" type="text" class="validate" data-ng-model="LocationModel['LocationDescription']" maxlength="100">
+                                    <label for="location_desc1">Location Description</label>
+                                </div>
+                                <div class="input-field">
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" class="filled-in" data-ng-model="LocationModel['Status']" />
+                                            <span>Status</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SaveCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertAndUpdateLocationClick()">Update</a>
+                </div>
+            </div>
+            <!--Edit Location popups close-->
+
+        </div>
+
+    </div>
+
+    @Html.Hidden("GetAllLocationsData", Url.Action("GetAllLocationsData", "Admin"))
+    @Html.Hidden("InsertAndUpdateLocation", Url.Action("InsertAndUpdateLocation", "Admin"))
+    @Html.Hidden("GetRegions", @Url.Action("GetRegions", "Admin"))
+    @Html.Hidden("GetCountries", @Url.Action("GetCountries", "Admin"))
+    @Html.Hidden("GetCountryByRegion", @Url.Action("GetCountries", "Admin"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>
+

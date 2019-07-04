@@ -1,0 +1,5 @@
+E:\HCM\HCM Code\HCM\HCM.Models\bin\Debug\HCM.Models.dll
+E:\HCM\HCM Code\HCM\HCM.Models\bin\Debug\HCM.Models.pdb
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Debug\HCM.Models.dll
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Debug\HCM.Models.pdb
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Debug\HCM.Models.csprojResolveAssemblyReference.cache

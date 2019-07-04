@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>MORPHEUS</title>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="57x57" href="~/Images/app_icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Images/app_icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/Images/app_icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Images/app_icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/Images/app_icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Images/app_icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/Images/app_icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Images/app_icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Images/app_icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Images/app_icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/app_icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/Images/app_icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/app_icons/favicon-16x16.png">
+
+    <link rel="manifest" href="~/Images/app_icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/Images/app_icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--Import Google,fa Icon Font-->
+    <link href="~/css/material-icons.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="~/css/jquery-ui.css" />
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="~/css/materialize.min.css" media="screen,projection" />
+    <!--Our custom css-->
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="~/Scripts/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/Scripts/angular.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/materialize.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/angular-materialize.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/chart.bundle.min.js"></script>
+
+    <style type="text/css">
+        #loadingDiv {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000000;
+            background-image: url(../Images/background_mask.png);
+        }
+
+        .ajax-loader {
+            position: absolute;
+            left: 46%;
+            top: 46%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+            display: block;
+            width: 170px;
+            padding: 10px;
+            border-radius: 6px;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+        }
+    </style>
+
+    <script>
+
+        $(document).ready(function () {
+            $('.sidenav-trigger').sideNav();
+            $(".dashBrd_ddl").dropdown({ hover: true });
+            //$(".financialDshBrd_ddl").dropdown({ hover: true });
+        });
+
+
+        $(document).ready(function () {
+            $('.modal').modal();
+        });
+
+        $(document).ready(function () {
+
+            var selectedMenu = '@ViewBag.Menu'
+            $('ul.main-menu li').each(function (e) {
+                $(this).removeClass('active')
+            })
+            $('.' + selectedMenu).addClass('active');
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <div id="loadingDiv" style="display: none;">
+        <div class="ajax-loader">
+            <img src="~/Images/loading.gif" />
+        </div>
+    </div>
+
+    <div data-ng-app="HCMWebApp">
+        <!-- Logo, Navigation, icons or header section start-->
+
+        <header>
+
+            <ul id="dashboard_UL_ddl" class="dropdown-content" style="min-width: 200px;">
+                <li><a href="@Url.Action("Index", "DashBoard")">DashBorad</a></li>
+                <li><a href="@Url.Action("GetProjectSummary", "DashBoard")">Project Summary</a></li>
+                <li><a href="@Url.Action("GetProjectHours", "DashBoard")">Project Hours</a></li>
+                <li><a href="@Url.Action("GetProjectCost", "DashBoard")">Project Cost</a></li>
+            </ul>
+
+            <ul id="dashboard_UL_ddl_sidenav" class="dropdown-content" style="min-width: 200px;">
+                <li><a href="@Url.Action("Index", "DashBoard")">DashBorad</a></li>
+                <li>@*<a class="financialDshBrd_ddl" data-activates="financialDshBrd_UL_ddl_sidenav" href="@Url.Action("GetProjectSummary", "DashBoard")">DashBorad Financials</a>*@</li>
+                <li><a href="@Url.Action("GetProjectSummary", "DashBoard")">Project Summary</a></li>
+                <li><a href="@Url.Action("GetProjectHours", "DashBoard")">Project Hours</a></li>
+                <li><a href="@Url.Action("GetProjectCost", "DashBoard")">Project Cost</a></li>
+            </ul>
+
+            <div class="navbar-fixed" style="height: 50px;">
+                <nav class="main-navigation" role="navigation">
+                    <div class="nav-wrapper">
+                        <div class="row">
+                            <div class="col s12">
+                                @if (Convert.ToString(Session["UserType"]) == "Business" || @Convert.ToString(Session["UserType"]) == "Technology")
+                                {
+                                    <a class="left" id="logo-container" href="@Url.Action("Index", "Questionnaire")">
+                                        <img src="~/Images/logo-small.png" alt="Logo" border="0" /></a>
+                                }
+                                @if (Convert.ToString(Session["UserType"]) == "ClientAdmin" || Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                                {
+                                    <a class="left" id="logo-container" href="@Url.Action("Index", "DashBoard")">
+                                        <img src="~/Images/logo-small.png" alt="Logo" border="0" /></a>
+                                }
+                                @if (Convert.ToString(Session["UserType"]) == "Business" || @Convert.ToString(Session["UserType"]) == "Technology")
+                                {
+                                    <a href="#" data-activates="mobile-menu" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
+                                }
+                                @if (Convert.ToString(Session["UserType"]) == "ClientAdmin" || Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                                {
+                                    <a href="#" data-activates="mobile-menu" class="sidenav-trigger right"><i class="material-icons">menu</i></a>
+                                }
+
+                                <ul class="right">
+                                    <li style="display: none;"><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-bell-o" aria-hidden="true"></i></a></li>
+                                    <li class="hide-on-med-and-down"><a href="@Url.Action("Logout", "Login")"><i class="fa fa-power-off" aria-hidden="true" style="color: #ff7b6d; font-size: 19px;" title="Logout"></i></a></li>
+                                </ul>
+
+                                <ul class="main-menu right hide-on-med-and-down" style="margin-left: 32px;">
+                                    @if (Convert.ToString(Session["UserType"]) == "Business" || @Convert.ToString(Session["UserType"]) == "Technology")
+                                    {
+                                        <li class="Questionnaire"><a href="@Url.Action("Index", "Questionnaire")">Questionnaire</a></li>
+                                    }
+                                    @if (Convert.ToString(Session["UserType"]) == "ClientAdmin" || Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                                    {
+                                        <li class="Admin"><a href="@Url.Action("GetUsers", "Admin")">Administration</a></li>
+                                        <li class="Reports"><a href="@Url.Action("GetSurveyResult", "HCMReport")">Reports</a></li>
+                                        <li class="Dashborad"><a class="dashBrd_ddl" data-activates="dashboard_UL_ddl" href="@Url.Action("Index", "DashBoard")">Dashboard<i class="material-icons right">arrow_drop_down</i></a></li>
+                                    }
+                                </ul>
+
+                                <div data-ng-controller="GlobalClientController" class="layout-ddl">
+
+
+                                    @if (Convert.ToString(Session["UserType"]) == "SuperAdmin" || Convert.ToString(Session["UserType"]) == "ClientAdmin")
+                                    {
+                                        <div data-ng-if="EnableVersionDiv" style="display: inline-block; margin-left: 15px;" class="hide-on-small-only inline right">
+                                            <div class="left" style="line-height: 52px;"><i class="material-icons prefix left" style="font-size: 20px; top: 0; margin-left: 15px; margin-right: 0px;">layers</i> Version:</div>
+                                            <span class="input-field left" style="margin-top: 0px; text-transform: capitalize; margin-left: 15px;">
+                                                <select data-ng-model="VersionID" 
+                                                 data-ng-init="VersionID = '@Convert.ToString(Session["VersionID"])'"
+                                                 data-ng-change="OnChangeGetVersionID(VersionID)" material-select>
+                                                    <option data-ng-repeat="Obj in GetAllVersionsListModel" ng-if="Obj.VersionID == '@Convert.ToString(Session["VersionID"])'" selected="selected" value="{{Obj.VersionID}}" style="color:#ff7b6d;">{{Obj.VersionName}}</option>
+                                                    <option data-ng-repeat="Obj in GetAllVersionsListModel" ng-if="Obj.VersionID != '@Convert.ToString(Session["VersionID"])'" value="{{Obj.VersionID}}">{{Obj.VersionName}}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    }
+
+
+                                    @if (Convert.ToString(Session["UserType"]) == "SuperAdmin" || Convert.ToString(Session["UserType"]) == "ClientAdmin")
+                                    {
+                    
+                                        <div data-ng-if="EnableProductDiv" style="display: inline-block; margin-left: 15px;" class="hide-on-small-only inline right">
+                                            <div class="left" style="line-height: 52px;"><i class="material-icons prefix left" style="font-size: 20px; top: 0; margin-left: 15px; margin-right: 0px;">layers</i> Product:</div>
+                                            <span class="input-field left" style="margin-top: 0px; text-transform: capitalize; margin-left: 15px;">
+                                                <select data-ng-model="ProductID" 
+                                                    data-ng-init="ProductID = '@Convert.ToString(Session["ProductID"])'"
+                                                     data-ng-change="OnChangeGetProduct(ProductID)" material-select>
+                                                <option data-ng-repeat="Obj in GetActiveProductsListModel" ng-if="Obj.ProductID == '@Convert.ToString(Session["ProductID"])'" selected="selected" value="{{Obj.ProductID}}" style="color:#ff7b6d;">{{Obj.ProductName}}</option>
+                                                <option data-ng-repeat="Obj in GetActiveProductsListModel" ng-if="Obj.ProductID != '@Convert.ToString(Session["ProductID"])'" value="{{Obj.ProductID}}">{{Obj.ProductName}}</option>
+                                            </select>
+                                            </span>
+                                        </div>
+                                    }
+
+
+                                    @if (Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                                    {
+                                        <div style="display: inline-block;" class="hide-on-small-only inline right">
+                                            <div class="left" style="line-height: 52px;"><i class="material-icons prefix left" style="font-size: 20px; top: 0; margin-left: 0px; margin-right: 0px;">person</i> Client:</div>
+                                            <span class="input-field left" style="margin-top: 0px; text-transform: capitalize; margin-left: 15px;">
+                                                <select data-ng-model="ClientID" 
+                                                data-ng-init="ClientID = '@Convert.ToString(Session["ClientID"])'"
+                                                 data-ng-change="OnChangeGetClientID(ClientID)" material-select>
+                                                    <option data-ng-repeat="Obj in ClientListModel" value="{{Obj.ClientID}}" ng-if="Obj.ClientID == '@Convert.ToString(Session["ClientID"])'" selected="selected" style="color:#ff7b6d;">{{Obj.ClientName}}</option>
+                                                    <option data-ng-repeat="Obj in ClientListModel" value="{{Obj.ClientID}}" ng-if="Obj.ClientID != '@Convert.ToString(Session["ClientID"])'">{{Obj.ClientName}}</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                    }
+
+
+
+
+
+
+
+                                    @Html.Hidden("GetClients", Url.Action("GetClients", "Home"))
+                                    @Html.Hidden("AssignClient", Url.Action("AssignClient", "Home"))
+                                    @Html.Hidden("DashboardIndex", Url.Action("Index", "DashBoard"))
+                                    @Html.Hidden("Logout", Url.Action("Index", "Login"))
+                                    @Html.Hidden("GetActiveVersions", Url.Action("GetActiveVersions", "Admin"))
+                                    @Html.Hidden("AssignVersion", Url.Action("AssignVersion", "Home"))
+                                    @Html.Hidden("GetActiveProducts", Url.Action("GetActiveProducts", "Admin"))
+                                    @Html.Hidden("AssignProduct", Url.Action("AssignProduct", "Home"))
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <ul class="sidenav main-menu" id="mobile-menu">
+
+                <li class="hide-on-med-only" data-ng-controller="GlobalClientController" style="margin-top: 30px;">
+                    @if (Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                    {
+                    
+                        <span class="input-field inline" style="margin-top: 6px; margin-bottom: 0px; margin-left: 15px; text-transform: capitalize;">
+                            <i class="material-icons prefix right" style="font-size: 20px; top: .8rem;">person</i>
+                            <select data-ng-model="ClientID" 
+                                                data-ng-init="ClientID = '@Convert.ToString(Session["ClientID"])'"
+                                                 data-ng-change="OnChangeGetClientID(ClientID)" material-select>
+                                <option data-ng-repeat="Obj in ClientListModel" value="{{Obj.ClientID}}" ng-if="Obj.ClientID == '@Convert.ToString(Session["ClientID"])'" selected="selected">{{Obj.ClientName}}</option>
+                                <option data-ng-repeat="Obj in ClientListModel" value="{{Obj.ClientID}}" ng-if="Obj.ClientID != '@Convert.ToString(Session["ClientID"])'">{{Obj.ClientName}}</option>
+                            </select>
+                            <label class="active" style="margin-top: 5px;">Client</label>
+                        </span>
+                    }
+
+                    @if (Convert.ToString(Session["UserType"]) == "SuperAdmin" || Convert.ToString(Session["UserType"]) == "ClientAdmin")
+                    {
+                    
+                        <span data-ng-if="EnableVersionDiv" class="input-field inline" style="margin-top: 6px; margin-bottom: 0px; margin-left: 15px; text-transform: capitalize;">
+                            <i class="material-icons prefix right" style="font-size: 20px; top: .8rem;">layers</i>
+                            <select data-ng-model="VersionID" 
+                                  data-ng-init="VersionID = '@Convert.ToString(Session["VersionID"])'"
+                                  data-ng-change="OnChangeGetVersionID(VersionID)" material-select>
+                                <option data-ng-repeat="Obj in GetAllVersionsListModel" ng-if="Obj.VersionID == '@Convert.ToString(Session["VersionID"])'" selected="selected" value="{{Obj.VersionID}}" style="color:#ff7b6d;">{{Obj.VersionName}}</option>
+                                <option data-ng-repeat="Obj in GetAllVersionsListModel" ng-if="Obj.VersionID != '@Convert.ToString(Session["VersionID"])'" value="{{Obj.VersionID}}">{{Obj.VersionName}}</option>
+                            </select>
+                            <label class="active" style="margin-top: 5px;">Version</label>
+                        </span>
+                    }
+
+
+                      @if (Convert.ToString(Session["UserType"]) == "SuperAdmin" || Convert.ToString(Session["UserType"]) == "ClientAdmin")
+                                    {
+                    
+                                        <div data-ng-if="EnableProductDiv" style="display: inline-block; margin-left: 15px;" class="hide-on-small-only inline right">
+                                            <div class="left" style="line-height: 52px;"><i class="material-icons prefix left" style="font-size: 20px; top: 0; margin-left: 15px; margin-right: 0px;">layers</i> Product:</div>
+                                            <span class="input-field left" style="margin-top: 0px; text-transform: capitalize; margin-left: 15px;">
+                                                <select data-ng-model="ProductID" 
+                                                    data-ng-init="ProductID = '@Convert.ToString(Session["ProductID"])'"
+                                                     data-ng-change="OnChangeGetProduct(ProductID)" material-select>
+                                                <option data-ng-repeat="Obj in GetActiveProductsListModel" ng-if="Obj.ProductID == '@Convert.ToString(Session["ProductID"])'" selected="selected" value="{{Obj.ProductID}}" style="color:#ff7b6d;">{{Obj.ProductName}}</option>
+                                                <option data-ng-repeat="Obj in GetActiveProductsListModel" ng-if="Obj.ProductID != '@Convert.ToString(Session["ProductID"])'" value="{{Obj.ProductID}}">{{Obj.ProductName}}</option>
+                                            </select>
+                                            </span>
+                                        </div>
+                                    }
+
+
+
+
+                    @Html.Hidden("GetClients", Url.Action("GetClients", "Home"))
+                    @Html.Hidden("AssignClient", Url.Action("AssignClient", "Home"))
+                    @Html.Hidden("DashboardIndex", Url.Action("Index", "DashBoard"))
+                    @Html.Hidden("Logout", Url.Action("Index", "Login"))
+                    @Html.Hidden("GetActiveVersions", Url.Action("GetActiveVersions", "Admin"))
+                    @Html.Hidden("AssignVersion", Url.Action("AssignVersion", "Home"))
+                    @Html.Hidden("GetActiveProducts", Url.Action("GetActiveProducts", "Admin"))
+                    @Html.Hidden("AssignProduct", Url.Action("AssignProduct", "Home"))
+
+                </li>
+
+
+                @if (Convert.ToString(Session["UserType"]) == "Business" || @Convert.ToString(Session["UserType"]) == "Technology")
+                {
+                    <li class="Questionnaire"><a href="@Url.Action("Index", "Questionnaire")">Questionnaire</a></li>
+                }
+                @if (Convert.ToString(Session["UserType"]) == "ClientAdmin" || Convert.ToString(Session["UserType"]) == "SuperAdmin")
+                {
+                    <li class="Admin"><a href="@Url.Action("GetUsers", "Admin")">Administration</a></li>
+                    <li class="Reports"><a href="@Url.Action("GetSurveyResult", "HCMReport")">Reports</a></li>
+                    <li class="Dashborad"><a class="dashBrd_ddl" data-activates="dashboard_UL_ddl_sidenav" href="@Url.Action("Index", "DashBoard")">Dashboard<i class="material-icons right">arrow_drop_down</i></a></li>
+                }
+
+                <li><a href="@Url.Action("Index", "Login")"><i class="material-icons left">exit_to_app</i>Logout</a></li>
+            </ul>
+
+        </header>
+
+        <section>
+            @RenderBody()
+        </section>
+
+        <footer>
+            <div class="footer">
+                © 2019, All rights reserved
+                <span class="copyright-logo">
+                    <img src="~/Images/logo2.png" alt="Logo" /></span>
+            </div>
+        </footer>
+
+        <!-- Logo, Navigation, icons or header section close -->
+    </div>
+
+</body>
+
+</html>

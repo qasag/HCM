@@ -1,0 +1,345 @@
+﻿@{
+    ViewBag.Title = "GetUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appUser.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetUserController">
+
+    <header>
+
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li class="active"><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+
+    </header>
+
+    <div class="row">
+
+        <div class="body_wrapper container">
+
+            <div class="section">
+                <div class="row">
+                    <div id="users_tab" class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">people_outline</i> Users
+                                      <a href="#addnew_users" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewUserClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped low_td_padding">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+
+                                                <th data-ng-click="sortBy('FirstName')"><span class="left">First Name </span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('UserType')"><span class="left">User Type</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('LastName')"><span class="left">Last Name</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Country.Region.RegionCode')"><span class="left">Region</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Country.CountryName')"><span class="left">Country</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Location.LocationName')"><span class="left">Location</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Email')"><span class="left">Email</span> <i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')"><span class="left">Status</span> <i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="User in UsersListModel | orderBy:sortpropertyName:sortorder">
+                                                <td style="display: none;">{{User.Country.Region.RegionID}}</td>
+                                                <td style="display: none;">{{User.Country.CountryID}}</td>
+                                                <td style="display: none;">{{User.Location.LocationID}}</td>
+                                                <td style="display: none;">{{User.Product.ProductID}}</td>
+                                                <td style="display: none;">{{User.UserID}}</td>
+                                                <td>{{User.FirstName}}</td>
+                                                <td>{{User.UserType}}</td>
+                                                <td>{{User.LastName}}</td>
+                                                <td>{{User.Country.Region.RegionCode}}</td>
+                                                <td>{{User.Country.CountryName}}</td>
+                                                <td>{{User.Location.LocationName}}</td>
+                                                <td>{{User.Email}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="User.Status == 1">check</i></td>
+                                                <td><a href="#Edit_users" class="modal-trigger" data-ng-click="EditUser($index,User)"><i class="material-icons">edit</i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Create Users popups start-->
+            <div id="addnew_users" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Add User</h5>
+                        <form class="">
+                            <div class="row">
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['UserType']"
+                                        data-ng-options="Obj.name as Obj.name for Obj in UserTypeListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+
+                                    <label>User Type<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['ProductID']"
+                                        data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                        data-ng-change="GetModulesBasedOnProductID(UserModel.ProductID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Products<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['ModuleID']"
+                                        data-ng-options="obj.ModuleID as obj.ModuleName for obj in ModuleListModel"
+                                        material-select multiple watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Modules<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="user_first_name" type="text" class="validate" data-ng-model="UserModel['FirstName']" maxlength="50">
+                                    <label for="user_first_name">First Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_last_name" type="text" class="validate" data-ng-model="UserModel['LastName']" maxlength="50">
+                                    <label for="user_last_name">Last Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_email" type="email" class="validate" data-ng-model="UserModel['Email']" maxlength="100">
+                                    <label for="user_email">Email<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_password" type="password" class="validate" data-ng-model="UserModel['Password']" maxlength="20">
+                                    <label for="user_password">Password<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['RegionID']"
+                                        data-ng-options="obj.RegionID as obj.RegionCode for obj in RegionsListModel"
+                                        data-ng-change="GetCountriesBasedOnRegionID(UserModel.RegionID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Region<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['CountryID']"
+                                        data-ng-options="obj.CountryID as obj.CountryName for obj in CountriesListModel"
+                                        data-ng-change="GetLocationBasedOnCountry(UserModel.CountryID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Country<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['LocationID']"
+                                        data-ng-options="obj.LocationID as obj.LocationName for obj in LocationsListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Location<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+
+
+                                <div class="input-field">
+                                    <div>
+                                        <label>
+                                            @* <input type="checkbox" class="filled-in" data-ng-model="UserModel['Status']" />*@
+                                            <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                            <span>Status</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SaveCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertUserClick()">Save</a>
+                </div>
+            </div>
+            <!--Create Users popups close-->
+
+            <!--Edit Users popups start-->
+            <div id="Edit_users" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Edit User</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field" data-ng-if="UserModel.UserType != 'ClientAdmin'">
+
+                                    <select data-ng-model="UserModel['UserType']"
+                                        data-ng-options="Obj.name as Obj.name for Obj in UserTypeListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>User Type<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['ProductID']"
+                                        data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                        data-ng-change="GetModulesBasedOnProductID(UserModel.ProductID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Products<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['ModuleID']"
+                                        data-ng-options="obj.ModuleID as obj.ModuleName for obj in ModuleListModel"
+                                        material-select multiple watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Modules<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="user_first_name1" type="text" class="validate" data-ng-model="UserModel['FirstName']" maxlength="50">
+                                    <label ng-class="{'active': UserModel.FirstName}" for="user_first_name1">First Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_last_name1" type="text" class="validate" data-ng-model="UserModel['LastName']" maxlength="50">
+                                    <label ng-class="{'active': UserModel.LastName}" for="user_last_name1">Last Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_email1" type="email" class="validate" data-ng-model="UserModel['Email']" maxlength="100">
+                                    <label ng-class="{'active': UserModel.Email}" for="user_email1">Email<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <input id="user_password1" type="password" class="validate" data-ng-model="UserModel['Password']" maxlength="20">
+                                    <label ng-class="{'active': UserModel.Password}" for="user_password1">Password<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['RegionID']"
+                                        data-ng-options="obj.RegionID as obj.RegionCode for obj in RegionsListModel"
+                                        data-ng-change="GetCountriesBasedOnRegionID()"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Region<span class="mandatoryfields">*</span></label>
+                                </div>
+
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['CountryID']"
+                                        data-ng-options="obj.CountryID as obj.CountryName for obj in CountriesListModel"
+                                        data-ng-change="GetLocationBasedOnCountry(UserModel.CountryID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Country<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="UserModel['LocationID']"
+                                        data-ng-options="obj.LocationID as obj.LocationName for obj in LocationsListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Location<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" class="filled-in" data-ng-model="UserModel['Status']" />
+                                            <span>Status</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SaveCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="UpdateUserClick()">Update</a>
+                </div>
+            </div>
+            <!--Edit Users popups close-->
+
+        </div>
+
+    </div>
+
+    @Html.Hidden("GetUsersList", @Url.Action("GetUsersList", "Admin"))
+    @Html.Hidden("InsertAndUpdateUser", @Url.Action("InsertAndUpdateUser", "Admin"))
+    @Html.Hidden("SendEmailToUser", @Url.Action("SendEmailToUser", "Admin"))
+    @Html.Hidden("EditUserByID", @Url.Action("EditUserByID", "Admin"))
+    @Html.Hidden("GetRegions", @Url.Action("GetRegions", "Admin"))
+
+    @Html.Hidden("GetCountries", @Url.Action("GetCountries", "Admin"))
+    @Html.Hidden("GetLocations", Url.Action("GetAllLocations", "Admin"))
+    @Html.Hidden("GetActiveProducts", Url.Action("GetActiveProducts", "Admin"))
+    @Html.Hidden("GetModulesByProductID", Url.Action("GetModulesByProductID", "Admin"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>
+
+
+

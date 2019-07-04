@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Questionnaire/appQuestionnaire.js" type="text/javascript"></script>
+
+<div class="row" data-ng-controller="QuestionnaireController">
+
+    @*Header Row Starts*@
+    <header>
+        <div class="navbar-fixed zindex1" style="height: 50px;">
+            <ul class="tabs tabs-fixed-width tab-demo z-depth-1 tabs_style questions_modules" style="position: fixed; top: 49px; box-shadow: none; border-bottom: 1px solid #dddddd;">
+
+                <li class="tab" data-ng-repeat="modules in ModulesListModel">
+                    <a data-ng-if="modules.Show ==true" class="active" data-ng-click="GetModulesQuestionnaires(modules)">{{modules.ModuleName}}</a>
+                    <a data-ng-if="modules.Show ==false" data-ng-click="GetModulesQuestionnaires(modules)">{{modules.ModuleName}}</a>
+                </li>
+
+            </ul>
+        </div>
+    </header>
+    @*Header Row Ends*@
+
+    @*List OF Questionnaires Starts*@
+    <div class="body_wrapper container">
+        <div class="section" style="margin: 0px; padding: 0px;">
+            <div class="col s12">
+                <div class="questions_section">
+                    <div class="question" data-ng-repeat="questionnaire in QuestionnaireListModel">
+
+                        <div class="section-text-header li_opacity" data-ng-if="questionnaire.RowNumber == 1" style="opacity: 1!important">
+                            <h6><i class="material-icons left">assignment</i> {{questionnaire.Area.AreaName}} - {{questionnaire.SubArea.SubAreaName}}</h6>
+                        </div>
+
+                        <div class="row" style="padding: 0px 10px;">
+                            <div class="col s12">
+                               @* <p style="display: none;">{{questionnaire.QuestionnaireClientMapperID}}</p>*@
+                                <p style="display: none;">{{questionnaire.QuestionnaireID}}</p>
+                                <p class="question">{{questionnaire.SerialNo}}. {{questionnaire.QuestionnaireName}}</p>
+                            </div>
+                            <div class="col s12">
+                                <p class="answers">
+                                    <label>
+                                        <input class="with-gap" value="Yes" type="radio" data-ng-model="questionnaire.Response"
+                                            data-ng-click="SaveQuestionnaires($event,questionnaire)" />
+                                        <span>Yes</span>
+                                    </label>
+                                    <label>
+                                        <input class="with-gap" value="No" type="radio" data-ng-model="questionnaire.Response"
+                                            data-ng-click="SaveQuestionnaires($event,questionnaire)" />
+                                        <span>No</span>
+                                    </label>
+                                </p>
+                            </div>
+                            <div class="col m6 s12">
+                                <form>
+                                    <div class="row">
+                                        <div class="input-field col s12 comments_field">
+                                            <textarea class="materialize-textarea" placeholder="Your Comments Here"
+                                                data-ng-model="questionnaire.Comments" data-ng-blur="SaveQuestionnaires($event,questionnaire)"></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div class="center-align" style="display: none;">
+                    <a class="waves-effect waves-light btn">NEXT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*List OF Questionnaires Ends*@
+
+    @* @Html.Hidden("GetAllModulesList", Url.Action("GetAllModulesList", "Questionnaire"))*@
+    @Html.Hidden("GetModulesByUserID", Url.Action("GetModulesByUserID", "Questionnaire"))
+    @Html.Hidden("GetAllQuestionnairesList", Url.Action("GetAllQuestionnairesList", "Questionnaire"))
+    @Html.Hidden("InsertAndUpdateQuestionnaire", Url.Action("InsertAndUpdateQuestionnaire", "Questionnaire"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+
+    <div style="height: 50px;">
+        <div class="filled_form_status">
+            <div id="progressbar">
+                <div class="caption">{{ProgressModel.AnsweredPercentage}}% completed ({{ProgressModel.QuestionsAnswered}} of {{ProgressModel.QuestionsCount}} answered)</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('input[type="radio"]').click(function () {
+            $(this).parentsUntil($(".questions_section"), ".question").addClass('li_opacity');
+        });
+    });
+</script>

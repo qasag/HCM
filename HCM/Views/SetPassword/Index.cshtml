@@ -1,0 +1,127 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>HCM</title>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="57x57" href="~/Images/app_icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Images/app_icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/Images/app_icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Images/app_icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/Images/app_icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Images/app_icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/Images/app_icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Images/app_icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Images/app_icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Images/app_icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/app_icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/Images/app_icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/app_icons/favicon-16x16.png">
+    <link rel="manifest" href="~/Images/app_icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/Images/app_icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--Import Google,fa Icon Font-->
+
+    <link href="~/css/material-icons.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="~/css/jquery-ui.css" />
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="~/css/materialize.min.css" media="screen,projection" />
+    <!--Our custom css-->
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="~/Scripts/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/materialize.js"></script>
+    <script src="~/Scripts/angular-materialize.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/chart.bundle.min.js"></script>
+    <script src="~/Scripts/SetPassword/appSetPassword.js"></script>
+
+</head>
+
+<body class="#f5f5f5 grey lighten-4 login_bodybg" data-ng-app="HCMWebApp">
+
+    <div data-ng-controller="SetPasswordController">
+        <section>
+            <div class="row">
+
+                <div class="body_wrapper container">
+                    <div class="section">
+
+                        <div class="rowcol s12 center-align" style="margin-top: 40px;">
+                            <img style="max-width: 200px;" src="~/Images/logo2.png" alt="" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col s12 l4 m8 offset-l4 offset-m2">
+                                <div class="card #ffffff white">
+                                    <div class="card-content">
+                                        <span class="card-title">
+                                            <blockquote style="margin-bottom: 4px;"><strong>Set Password</strong></blockquote>
+                                        </span>
+
+                                        <form>
+                                            <div class="row">
+
+                                                <div class="input-field col s12" style="margin-bottom: 0px;">
+                                                    <input id="user_name" type="text" class="validate" data-ng-model="SetPasswordModel['Email']" maxlength="100" readonly="readonly">
+                                                    <label for="user_name">User Name</label>
+                                                </div>
+
+                                                <div class="input-field col s12">
+                                                    <input id="Newpassword" type="password" class="validate" data-ng-model="SetPasswordModel['NewPassword']" maxlength="20">
+                                                    <label for="Newpassword">New Password<span class="mandatoryfields">*</span></label>
+                                                </div>
+
+                                                <div class="input-field col s12">
+                                                    <input id="Confirmpassword" type="password" class="validate" data-ng-model="SetPasswordModel['ConfirmPassword']" maxlength="20">
+                                                    <label for="Confirmpassword">Confirm Password<span class="mandatoryfields">*</span></label>
+                                                </div>
+
+                                                <p class="col s12 login_links" style="display: none;">
+                                                    <label>
+                                                        <input type="checkbox" class="filled-in" />
+                                                        <span>Remember Me</span> <span class="pull-right"><a href="#">Forgot Password?</a></span>
+                                                    </label>
+                                                </p>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="card-action center-align">
+                                        <a href="" class="waves-effect waves-light btn" data-ng-click="UpdateSetPasswordUser()">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <input type="hidden" id="hdnEmailID" value="@ViewBag.hdnEmailID"/>
+                @Html.Hidden("UpdateSetPassword", Url.Action("UpdateSetPassword", "SetPassword"))
+                @Html.Hidden("LoginIndex", Url.Action("Index", "Login"))
+                SendEmail
+
+               
+            </div>
+        </section>
+        <!-- Logo, Navigation, icons or header section close-->
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,543 @@
+﻿@{
+    ViewBag.Title = "GetQuestionnaire";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appGetQuestionnaire.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    }); loadingDiv
+</script>
+
+<div data-ng-controller="GetAdminQuestionnaireController">
+
+    <header>
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li class="active"><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="body_wrapper container">
+
+            <div class="section">
+                <div class="row">
+
+                    <div id="questionnaire_tab" class="col s12">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">assignment</i> Questionnaire
+                                       <a href="#addnew_questionnaire" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewQuestionnaireClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+
+                                <div class="" style="height: 460px; overflow: auto;">
+                                    <table class="striped low_td_padding" style="width: 100%; min-width: 1800px;">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th style="display: none;">Mapped</th>
+                                                <th data-ng-click="sortBy('Product.ProductName')"><span class="left">Product</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Module.ModuleName')"><span class="left">Module</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('WorkStream.WorkStreamName')"><span class="left">WorkStream</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Area.AreaName')"><span class="left">Area</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('SubArea.SubAreaName')"><span class="left">SubArea</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('QuestionnaireName')"><span class="left">Questionnaire Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Security')"><span class="left">Security</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Audit')"><span class="left">Audit</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Compliance')"><span class="left">Compliance</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Opertional')"><span class="left">Opertional</span><i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="questionnaire in QuestionnaireAdminListModel  | orderBy:sortpropertyName:sortorder">
+
+                                                <td style="width: 80px; display: none;">
+                                                    <label>
+                                                        <input type="checkbox" class="filled-in"
+                                                            data-ng-disabled="questionnaire.IsDefault == true"
+                                                            data-ng-model="questionnaire.Mapped"
+                                                            data-ng-click="UpdateQuestionnaireClient($index,questionnaire)" />
+                                                        <span></span>
+                                                    </label>
+                                                </td>
+                                                 <td style="display:none;">{{questionnaire.Product.ProductID}}</td>
+                                                 <td style="width: 120px;">{{questionnaire.Product.ProductName}}</td>
+                                                <td style="width: 120px;">{{questionnaire.Module.ModuleName}}</td>
+                                                <td style="width: 120px;">{{questionnaire.WorkStream.WorkStreamName}}</td>
+                                                <td style="min-width: 120px; max-width: 300px;">{{questionnaire.Area.AreaName}}</td>
+                                                <td style="min-width: 120px; max-width: 300px;">{{questionnaire.SubArea.SubAreaName}}</td>
+                                                <td style="min-width: 120px; max-width: 400px;">{{questionnaire.QuestionnaireName}}</td>
+                                                <td style="width: 120px;">{{questionnaire.Security ? "True" : "False"}}</td>
+                                                <td style="width: 120px;">{{questionnaire.Audit  ? "True" : "False"}}</td>
+                                                <td style="width: 120px;">{{questionnaire.Compliance  ? "True" : "False"}}</td>
+                                                <td style="width: 120px;">{{questionnaire.Opertional  ? "True" : "False"}}</td>
+                                                <td><a href="#Edit_questionnaire" class="modal-trigger" data-ng-click="EditQuestionnaire($index,questionnaire)"><i class="material-icons">edit</i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Create Questionnaire popups start-->
+            <div id="addnew_questionnaire" class="modal modal-fixed-footer" style="width: 75%;">
+                <div class="modal-content">
+
+                    <div class="row">
+                     
+                        <h5>Add Questionnaire</h5>
+                        <form class="col s12 fields_bottom_low_margin" style="padding: 0px;">
+                            <div class="row">
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="input-field col l4 m12 s12"> 
+                                            <select data-ng-model="QuestionnaireModel['ProductID']" 
+                                                data-ng-options="Obj.ProductID as Obj.ProductName for Obj in ProductsListModel" 
+                                                data-ng-change="GetModulesByProductID(QuestionnaireModel.ProductID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Products<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+
+                                        <div class="input-field col l4 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['ModuleID']"
+                                                data-ng-options="Obj.ModuleID as Obj.ModuleName for Obj in ModulesListModel"
+                                                data-ng-change="GetWorkStreamAndAreaByModuleID(QuestionnaireModel.ModuleID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Module<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col l4 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['WorkStreamID']"
+                                                data-ng-options="Obj.WorkStreamID as Obj.WorkStreamName for Obj in WorkStreamListModel"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Workstream</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+                                        <div class="input-field col l6 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['AreaID']"
+                                                data-ng-options="Obj.AreaID as Obj.AreaName for Obj in AreaListModel"
+                                                data-ng-change="GetSubAreaByAreaID(QuestionnaireModel.AreaID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Area<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col l6 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['SubAreaID']"
+                                                data-ng-options="Obj.SubAreaID as Obj.SubAreaName for Obj in SubAreaListModel"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Sub Area<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+                                        <div class="input-field col l12 m12 s12">
+                                            <textarea id="questionnaire_name" placeholder="Write text here" class="materialize-textarea"
+                                                data-ng-model="QuestionnaireModel['QuestionnaireName']"></textarea>
+                                            <label for="questionnaire_name">Questionnaire Name<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12" style="margin-bottom: 0px;">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">poll</i> Yes</h6>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="overall_rating" type="text" class="validate" data-ng-model="QuestionnaireModel['OverallRating_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="overall_rating">Overall Rating<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessscore" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessScore_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessscore">Business Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessweight" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessWeight_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessweight">Business Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                        <div class="input-field col w20">
+                                            <input id="technologyscore" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyScore_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyscore">Technology Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="technologyweight" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyWeight_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyweight">Technology Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12" style="margin-bottom: 0px;">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">poll</i> No</h6>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="overall_rating_no" type="text" class="validate" data-ng-model="QuestionnaireModel['OverallRating_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="overall_rating_no">Overall Rating<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessscore_no" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessScore_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessscore_no">Business Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessweight_no" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessWeight_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessweight_no">Business Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                        <div class="input-field col w20">
+                                            <input id="technologyscore_no" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyScore_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyscore_no">Technology Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="technologyweight_no" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyWeight_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyweight_no">Technology Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">report_problem</i> Risk Factor</h6>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Security']" />
+                                                <span>Security</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Audit']" />
+                                                <span>Audit</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Compliance']" />
+                                                <span>Compliance</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Opertional']" />
+                                                <span>Opertional</span>
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col s12">
+                                    <label>
+                                        @*<input type="checkbox" class="filled-in" checked="checked" data-ng-model="QuestionnaireModel['Status']" />*@
+                                        <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                        <span>Status</span>
+                                    </label>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelQuestionnaireClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="SaveAdminQuestionnaire()">Save</a>
+                </div>
+            </div>
+            <!-- Create Questionnaire popups close-->
+
+            <!-- Edit Questionnaire popups start-->
+            <div id="Edit_questionnaire" class="modal modal-fixed-footer" style="width: 75%;">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Edit Questionnaire</h5>
+                        <form class="col s12 fields_bottom_low_margin" style="padding: 0px;">
+                            <div class="row">
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="input-field col l4 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['ProductID']"
+                                                data-ng-options="Obj.ProductID as Obj.ProductName for Obj in ProductsListModel"
+                                                data-ng-change="GetModulesByProductID(QuestionnaireModel.ProductID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Products<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col l4 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['ModuleID']"
+                                                data-ng-options="Obj.ModuleID as Obj.ModuleName for Obj in ModulesListModel"
+                                                data-ng-change="GetWorkStreamAndAreaByModuleID(QuestionnaireModel.ModuleID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Module<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col l4 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['WorkStreamID']"
+                                                data-ng-options="Obj.WorkStreamID as Obj.WorkStreamName for Obj in WorkStreamListModel"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Workstream</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+                                        <div class="input-field col l6 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['AreaID']"
+                                                data-ng-options="Obj.AreaID as Obj.AreaName for Obj in AreaListModel"
+                                                data-ng-change="GetSubAreaByAreaID(QuestionnaireModel.AreaID)"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Area<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col l6 m12 s12">
+                                            <select data-ng-model="QuestionnaireModel['SubAreaID']"
+                                                data-ng-options="Obj.SubAreaID as Obj.SubAreaName for Obj in SubAreaListModel"
+                                                material-select watch>
+                                                <option value="" disabled>Choose</option>
+                                            </select>
+                                            <label>Sub Area<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+                                        <div class="input-field col l12 m12 s12">
+                                            <textarea id="questionnaire_name1" placeholder="Write text here" class="materialize-textarea"
+                                                data-ng-model="QuestionnaireModel['QuestionnaireName']"></textarea>
+                                            <label for="questionnaire_name">Questionnaire Name<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12" style="margin-bottom: 0px;">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">poll</i> Yes</h6>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="overall_rating1" type="text" class="validate" data-ng-model="QuestionnaireModel['OverallRating_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="overall_rating1">Overall Rating<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessscore1" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessScore_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessscore1">Business Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessweight1" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessWeight_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessweight1">Business Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                        <div class="input-field col w20">
+                                            <input id="technologyscore1" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyScore_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyscore1">Technology Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="technologyweight1" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyWeight_Yes']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyweight1">Technology Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 0px;">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12" style="margin-bottom: 0px;">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">poll</i> No</h6>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="overall_rating_no1" type="text" class="validate" data-ng-model="QuestionnaireModel['OverallRating_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="overall_rating_no1">Overall Rating<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessscore_no1" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessScore_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessscore_no1">Business Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="businessweight_no1" type="text" class="validate" data-ng-model="QuestionnaireModel['BusinessWeight_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="businessweight_no1">Business Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+                                        <div class="input-field col w20">
+                                            <input id="technologyscore_no1" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyScore_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyscore_no1">Technology Score<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                        <div class="input-field col w20">
+                                            <input id="technologyweight_no1" type="text" class="validate" data-ng-model="QuestionnaireModel['TechnologyWeight_No']" onkeypress="return IsNumeric(event,this);" valid-decimal>
+                                            <label for="technologyweight_no1">Technology Weight<span class="mandatoryfields">*</span></label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col s12">
+
+                                        <div class="section-text-header col s12">
+                                            <h6 style="margin: 0px;"><i class="material-icons left">report_problem</i> Risk Factor</h6>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Security']" />
+                                                <span>Security</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Audit']" />
+                                                <span>Audit</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Compliance']" />
+                                                <span>Compliance</span>
+                                            </label>
+                                        </div>
+
+                                        <div class="col w20">
+                                            <label>
+                                                <input type="checkbox" class="filled-in" data-ng-model="QuestionnaireModel['Opertional']" />
+                                                <span>Opertional</span>
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col s12">
+                                    <label>
+                                        <input type="checkbox" class="filled-in" checked="checked" data-ng-model="QuestionnaireModel['Status']" />
+                                        <span>Status</span>
+                                    </label>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelQuestionnaireClick()">Cancel</a> @* data-ng-click="CancelQuestionnaireClick()"*@
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="SaveAdminQuestionnaire()">Update</a>
+                </div>
+            </div>
+            <!-- Edit Questionnaire popups close-->
+
+        </div>
+    </div>
+
+    @Html.Hidden("GetAllModulesList", @Url.Action("GetAllModulesList", "Admin"))
+    @Html.Hidden("GetQuestionnaireList", @Url.Action("GetQuestionnaireList", "Admin"))
+    @Html.Hidden("GetWorkStreamByModuleID", @Url.Action("GetWorkStreamByModuleID", "Admin"))
+    @Html.Hidden("GetAreaByModuleID", @Url.Action("GetAreaByModuleID", "Admin"))
+    @Html.Hidden("GetSubAreaByAreaID", @Url.Action("GetSubAreaByAreaID", "Admin"))
+    @Html.Hidden("InsertAndUpdateQuestionnaire", @Url.Action("InsertAndUpdateQuestionnaire", "Admin"))
+    @Html.Hidden("InsertQuestionnaireClientMapper", @Url.Action("InsertQuestionnaireClientMapper", "Admin"))
+    @Html.Hidden("GetActiveProducts", @Url.Action("GetActiveProducts", "Admin"))
+    @Html.Hidden("GetModulesByProductID", @Url.Action("GetModulesByProductID", "Admin"))
+
+    @*  @Html.Hidden("GetActiveVersions", @Url.Action("GetActiveVersions", "Admin"))*@
+
+    @Html.Hidden("CheckSession", @Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", @Url.Action("Logout", "Login"))
+
+</div>

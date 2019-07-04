@@ -1,0 +1,239 @@
+﻿@{
+    ViewBag.Title = "GetSubArea";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appSubArea.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetSubAreaController">
+
+    <header>
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li class="active"><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="row">
+
+        <div class="body_wrapper container">
+            <div class="section">
+                <div class="row">
+
+                    <div id="subarea_tab" class="col s12">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">location_searching</i> Sub Area
+                                     <a href="#addnew_subarea" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewSubAreaClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped low_td_padding">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('SubAreaName')"><span class="left">SubArea Name</span><i class="material-icons">unfold_more</i></th>
+                                                 <th data-ng-click="sortBy('Product.ProductName')"><span class="left">Product Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Area.AreaName')"><span class="left">Area Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Area.Module.ModuleName')"><span class="left">Module Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')"><span class="left">Status</span><i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="subArea in SubAreaListModel  | orderBy:sortpropertyName:sortorder">
+                                                <td style="width: 520px;">{{subArea.SubAreaName}}</td>
+                                                 <td style="display:none;">{{subArea.Product.ProductID}}</td>
+                                                 <td>{{subArea.Product.ProductName}}</td>
+                                                <td>{{subArea.Area.AreaName}}</td>
+                                                <td>{{subArea.Area.Module.ModuleName}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="subArea.Status == 1">check</i></td>
+                                                <td><a href="#Edit_subarea" class="modal-trigger" data-ng-click="EditSubArea($index,subArea)"><i class="material-icons">edit</i></a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--Create SubArea popups start-->
+            <div id="addnew_subarea" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Add Sub Area</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['ProductID']"
+                                        data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                        data-ng-change="GetModulesBasedOnProductID(WorkStreamModel.ProductID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Products<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['ModuleID']"
+                                        data-ng-change="GetAreaByModuleID(SubAreaModel.ModuleID)"
+                                        data-ng-options="Obj.ModuleID as Obj.ModuleName for Obj in ModulesListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Module<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['AreaID']"
+                                        data-ng-options="Obj.AreaID as Obj.AreaName for Obj in AreaListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Area<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="workstream_name" type="text" class="validate" data-ng-model="SubAreaModel['SubAreaName']">
+                                    <label for="workstream_name">Sub Area Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <textarea id="workstream_desc" class="materialize-textarea" data-ng-model="SubAreaModel['SubAreaDescription']"></textarea>
+                                    <label for="workstream_desc">Sub Area Description</label>
+                                </div>
+                                <div class="row">
+                                    <label>
+                                        @* <input type="checkbox" class="filled-in" data-ng-model="SubAreaModel['Status']" />*@
+                                        <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                        <span>Status</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SubAreaCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="SubAreaSaveClick()">Save</a>
+                </div>
+            </div>
+            <!--SubArea popups close-->
+
+            <!--Edit SubArea popups start-->
+            <div id="Edit_subarea" class="modal modal-fixed-footer">
+                <div class="modal-content">
+
+                    <div class="row">
+                        <h5>Edit Sub Area</h5>
+                        <form class="">
+                            <div class="row">
+
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['ProductID']"
+                                        data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                        data-ng-change="GetModulesBasedOnProductID(WorkStreamModel.ProductID)"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Products<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['ModuleID']"
+                                        data-ng-change="GetAreaByModuleID(SubAreaModel.ModuleID)"
+                                        data-ng-options="Obj.ModuleID as Obj.ModuleName for Obj in ModulesListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Module<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <select data-ng-model="SubAreaModel['AreaID']"
+                                        data-ng-options="Obj.AreaID as Obj.AreaName for Obj in AreaListModel"
+                                        material-select watch>
+                                        <option value="" disabled="disabled">Choose</option>
+                                    </select>
+                                    <label>Area<span class="mandatoryfields">*</span></label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input id="workstream_name1" type="text" class="validate" data-ng-model="SubAreaModel['SubAreaName']">
+                                    <label for="workstream_name1">Sub Area Name<span class="mandatoryfields">*</span></label>
+                                </div>
+                                <div class="input-field">
+                                    <textarea id="workstream_desc1" class="materialize-textarea" data-ng-model="SubAreaModel['SubAreaDescription']"></textarea>
+                                    <label for="workstream_desc1">Sub Area Description</label>
+                                </div>
+                                <div class="row">
+                                    <label>
+                                        <input type="checkbox" class="filled-in" data-ng-model="SubAreaModel['Status']" />
+                                        <span>Status</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="SubAreaCancelClick()">Cancel</a>
+                    <a href="" class="waves-effect waves-green btn-flat" data-ng-click="SubAreaSaveClick()">Update</a>
+                </div>
+            </div>
+            <!--SubArea popups close-->
+
+        </div>
+
+    </div>
+
+    @Html.Hidden("GetSubAreaList", @Url.Action("GetSubAreaList", "Admin"))
+    @Html.Hidden("GetAllModulesList", Url.Action("GetAllModulesList", "Admin"))
+    @Html.Hidden("GetAreaByModuleID", @Url.Action("GetAreaByModuleID", "Admin"))
+    @Html.Hidden("InsertAndUpdateSubArea", @Url.Action("InsertAndUpdateSubArea", "Admin"))
+
+    @Html.Hidden("GetActiveProducts", Url.Action("GetActiveProducts", "Admin"))
+    @Html.Hidden("GetModulesByProductID", Url.Action("GetModulesByProductID", "Admin"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>

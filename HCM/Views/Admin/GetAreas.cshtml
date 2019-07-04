@@ -1,0 +1,219 @@
+﻿@{
+    ViewBag.Title = "GetAreas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appGetAreas.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetAreasController">
+    <header>
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li class="active"><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+    <div class="row">
+
+        <!-- Get Area List-->
+        <div class="body_wrapper container">
+            <div class="section">
+                <div class="row">
+                    <div id="areas_tab" class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">people</i> Areas
+                                    <a href="#addnew_area" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddAreaClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('AreaName')"><span class="left">Area Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Product.ProductName')"><span class="left">Product Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Module.ModuleName')"><span class="left">Module Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('AreaDescription')"><span class="left">Area Description</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')"><span class="left">Status</span><i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="area in AreaListModel  | orderBy:sortpropertyName:sortorder">
+                                                <td style="display: none;">{{area.AreaID}}</td>
+                                                <td style="display: none;">{{area.Product.ProductID}}</td>
+                                                <td>{{area.AreaName}}</td>
+                                                <td>{{area.Product.ProductName}}</td>
+                                                <td>{{area.Module.ModuleName}}</td>
+                                                <td>{{area.AreaDescription}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="area.Status==1">check</i></td>
+                                                <td><a href="#edit_area" class="modal-trigger" data-ng-click="EditAreaByID($index, area)"><i class="material-icons">edit</i></a></td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Area popups start-->
+        <div id="addnew_area" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Add Area</h5>
+                    <form class="">
+                        <div class="row">
+
+                             <div class="input-field">
+                                <select data-ng-model="AreaModel['ProductID']"
+                                    data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                    data-ng-change="GetModulesBasedOnProductID(WorkStreamModel.ProductID)"
+                                    material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label>Products<span class="mandatoryfields">*</span></label>
+                            </div>
+
+                            <div class="input-field">
+                                <select data-ng-model="AreaModel['ModuleID']" ng-options="module.ModuleID as module.ModuleName for module in ModuleListModel" data-ng-init="AreaModel['ModuleID']=null"
+                                    material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label for="module">Module<span class="mandatoryfields">*</span></label>
+                            </div>
+
+                            <div class="input-field">
+                                <input id="area_name" type="text" class="validate" data-ng-model="AreaModel['AreaName']" maxlength="100">
+                                <label for="area_name">Area Name<span class="mandatoryfields">*</span></label>
+                            </div>
+
+
+                            <div class="input-field">
+                                <input id="area_description" type="text" data-ng-model="AreaModel['AreaDescription']" maxlength="250">
+                                <label for="area_description">Area Description</label>
+                            </div>
+                            <div class="row">
+                                <label>
+                                    @* <input type="checkbox" class="filled-in" data-ng-model="AreaModel['Status']" />*@
+                                    <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="CreateAreaClick()">Save</a>
+            </div>
+        </div>
+        <!-- Create Area popups close-->
+
+        <!-- Edit Area popups  Code start-->
+        <div id="edit_area" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Edit Area</h5>
+                    <form class="">
+                        <div class="row">
+                             <div class="input-field">
+                                <select data-ng-model="AreaModel['ProductID']"
+                                    data-ng-options="obj.ProductID as obj.ProductName for obj in ProductsListModel"
+                                    data-ng-change="GetModulesBasedOnProductID(WorkStreamModel.ProductID)"
+                                    material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label>Products<span class="mandatoryfields">*</span></label>
+                            </div>
+
+                            <div class="input-field">
+                                <select ng-model="AreaModel['ModuleID']" ng-options="module.ModuleID as module.ModuleName for module in ModuleListModel" material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label for="module">Module <span class="mandatoryfields">*</span></label>
+                            </div>
+
+                            <div class="input-field">
+                                <input id="area_name1" type="text" class="validate" data-ng-model="AreaModel['AreaName']" maxlength="100">
+                                <label ng-class="{'active': AreaModel.AreaName }" for="area_name1">Area Name<span class="mandatoryfields">*</span></label>
+                            </div>
+
+
+                            <div class="input-field">
+                                <input id="area_description" type="text" data-ng-model="AreaModel['AreaDescription']" maxlength="250">
+                                <label ng-class="{'active': AreaModel.AreaDescription }" for="area_description">Area Description</label>
+                            </div>
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" class="filled-in" data-ng-model="AreaModel['Status']" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="UpdateAreaClick()">Update</a>
+            </div>
+        </div>
+        <!-- Edit Area popups close-->
+
+    </div>
+
+    @Html.Hidden("GetAllAreas", @Url.Action("GetAllAreas", "Admin"))
+    @Html.Hidden("AreaCreation", Url.Action("AreaCreation", "Admin"))
+
+    @Html.Hidden("GetAreaByID", @Url.Action("GetAreaByID", "Admin"))
+    @Html.Hidden("UpdateArea", Url.Action("AreaUpdation", "Admin"))
+
+    @Html.Hidden("GetActiveProducts", Url.Action("GetActiveProducts","Admin"))
+    @Html.Hidden("GetModulesByProductID", Url.Action("GetModulesByProductID","Admin"))
+
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>

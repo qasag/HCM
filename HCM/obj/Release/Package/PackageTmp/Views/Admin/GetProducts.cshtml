@@ -1,0 +1,171 @@
+﻿@{
+    ViewBag.Title = "GetProducts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appProduct.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetProductsController">
+
+    <header>
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li class="active"><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+    <div class="row">
+        <!-- Get Clients List-->
+        <div class="body_wrapper container">
+            <div class="section">
+                <div class="row">
+                    <div id="clients_tab" class="col s12">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">layers</i>Products
+                                    <a href="#addnew_product" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewProductClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('ProductName')"><span class="left">Product Name</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('ProductDescription')"><span class="left">Product Description</span><i class="material-icons">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')"><span class="left">Status</span><i class="material-icons">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="products in ProductsListModel | orderBy:sortpropertyName:sortorder">
+                                                <td style="display: none;">{{products.ProductID}}</td>
+                                                <td>{{products.ProductName}}</td>
+                                                <td>{{products.ProductDescription}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="products.Status==1">check</i></td>
+                                                <td><a href="#edit_product" class="modal-trigger" data-ng-click="EditProductByID($index, products)"><i class="material-icons">edit</i></a></td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Create Modules popups start-->
+        <div id="addnew_product" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Add New Product</h5>
+                    <form class="">
+                        <div class="row">
+                            <div class="input-field">
+                                <input id="product_name" type="text" class="validate" data-ng-model="ProductModel['ProductName']" maxlength="50">
+                                <label class="active" for="product_name">Product Name<span class="mandatoryfields">*</span></label>
+                            </div>
+                            <div class="input-field">
+                                <textarea id="product_desc" class="materialize-textarea" data-ng-model="ProductModel['ProductDescription']" maxlength="100"></textarea>
+                                <label for="product_desc">Product Description</label>
+                            </div>
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertProductClick()">Save</a>
+            </div>
+        </div>
+        <!-- Create Modules popups close-->
+
+        <!-- Edit Modules Code start-->
+        <div id="edit_product" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Edit Product</h5>
+                    <form class="">
+                        <div class="row">
+                            <div class="input-field">
+                                <input id="module_name1" type="text" class="validate" data-ng-model="ProductModel['ProductName']" maxlength="50">
+                                <label class="active" ng-class="{'active': ProductModel.ProductName }" for="product_name1">Product Name<span class="mandatoryfields">*</span></label>
+                            </div>
+                            <div class="input-field">
+                                <textarea id="module_desc1" class="materialize-textarea" data-ng-model="ProductModel['ProductDescription']" maxlength="100"></textarea>
+                                <label ng-class="{'active': ProductModel.ProductDescription }" for="module_desc1">Product Description</label>
+                            </div>
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" class="filled-in" data-ng-model="ProductModel['Status']" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="CancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertProductClick()">Update</a>
+            </div>
+        </div>
+        <!-- Edit Modules popups close-->
+
+    </div>
+
+    @Html.Hidden("GetAllProducts", Url.Action("GetAllProducts", "Admin"))
+    @Html.Hidden("InsertProduct", Url.Action("InsertAndUpdateProduct", "Admin"))
+    @Html.Hidden("CheckSession", Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", Url.Action("Logout", "Login"))
+
+</div>
+

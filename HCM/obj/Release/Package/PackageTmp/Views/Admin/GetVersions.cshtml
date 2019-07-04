@@ -1,0 +1,201 @@
+﻿@{
+    ViewBag.Title = "GetVersions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/Admin/appGetVersions.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Config_ddl").dropdown({ hover: true });
+    });
+</script>
+
+<div data-ng-controller="GetVersionsController">
+    <header>
+        <div class="inside_nav">
+
+            <ul id="Config_UL_ddl" class="dropdown-content" style="max-width: 250px; display: none;">
+                <li><a href="@Url.Action("GetLegends", "Admin")">Legends</a></li>
+                <li><a href="@Url.Action("GetExternalRates", "Admin")">External Rate</a></li>
+                <li class="divider"></li>
+                <li><a href="@Url.Action("GetFinancialConfigurations", "Admin")">Financial Configuration</a></li>
+                <li><a href="@Url.Action("GetDurations", "Admin")">Duration</a></li>
+            </ul>
+
+            <nav>
+                <div class="nav-wrapper zindex1">
+                    <ul>
+                        <li data-ng-if="'@Convert.ToString(Session["UserType"])' == 'SuperAdmin'"><a href="@Url.Action("GetClients", "Admin")">Clients</a></li>
+                        <li><a href="@Url.Action("GetUsers", "Admin")">Users</a></li>
+                        <li class="active"><a href="@Url.Action("GetVersions", "Admin")">Version</a></li>
+                        <li><a href="@Url.Action("GetProducts", "Admin")">Products</a></li>
+                        <li><a href="@Url.Action("GetModules", "Admin")">Modules</a></li>
+                        <li><a href="@Url.Action("GetWorkStreams", "Admin")">Workstream</a></li>
+                        <li><a href="@Url.Action("GetAreas", "Admin")">Area</a></li>
+                        <li><a href="@Url.Action("GetSubArea", "Admin")">Sub Area</a></li>
+                        <li><a href="@Url.Action("GetQuestionnaire", "Admin")">Questionnaire</a></li>
+                        <li><a class="Config_ddl" data-activates="Config_UL_ddl">Configurations <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <li><a href="@Url.Action("GetLocations", "Admin")">Locations</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+    <div class="row">
+
+        <div class="body_wrapper container">
+            <div class="section">
+                <div class="row">
+                    <div id="clients_tab" class="col s12">
+
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <i class="material-icons left">layers</i> Version
+                                    <a href="#addnew_Version" class="waves-effect waves-light btn right modal-trigger" data-ng-click="AddNewVersionClick()"><i class="material-icons left">add</i>Add New</a>
+                                    <div class="clear"></div>
+                                </span>
+                                <div class="min_height_table">
+                                    <table class="responsive-table striped">
+                                        <thead>
+                                            <tr style="background-color: #f2f2f2;">
+                                                <th data-ng-click="sortBy('VersionName')">Version Name <i class="material-icons dp48">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('FromVersionName')">From Version <i class="material-icons dp48">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('VersionDescription')">Version Desc <i class="material-icons dp48">unfold_more</i></th>
+                                                <th data-ng-click="sortBy('Status')">Status<i class="material-icons dp48">unfold_more</i></th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <tr data-ng-repeat="version in VersionListModel | orderBy:sortpropertyName:sortorder">
+                                                <td>{{version.VersionName}}</td>
+                                                <td>{{version.FromVersionName}}</td>
+                                                <td>{{version.VersionDescription}}</td>
+                                                <td><i class="material-icons teal-text" data-ng-if="version.Status==1">check</i></td>
+                                                <td>
+                                                    <a href="#edit_Version" title="Edit" class="modal-trigger" data-ng-click="EditVersionByID($index, version)"><i class="material-icons">edit</i></a>
+                                                    <i class="material-icons dp48" data-ng-if="version.IsDefault == true">assessment</i>
+                                                    <a href="" title="Set As Default" data-ng-if="version.IsDefault == false" data-ng-click="SetAsDefaultVersionClick($index, version)"><i class="material-icons dp48">assessment</i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Create Version popups start-->
+        <div id="addnew_Version" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Add Version</h5>
+                    <form class="">
+                        <div class="row">
+
+                            <div class="input-field">
+                                <input id="version_name" type="text" class="validate" data-ng-model="VersionModel['VersionName']" maxlength="50">
+                                <label for="version_name">Version Name<span class="mandatoryfields">*</span></label>
+                            </div>
+                            <div class="input-field">
+                                <input id="version_desc" type="text" data-ng-model="VersionModel['VersionDescription']" maxlength="100">
+                                <label for="version_desc">Version Description</label>
+                            </div>
+
+                            <div class="input-field">
+                                <select data-ng-model="VersionModel['FromVersionID']"
+                                    data-ng-options="version.VersionID as version.VersionName for version in GetAllVersionsListModel" material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label for="module">From Version<span class="mandatoryfields">*</span></label>
+                            </div>
+
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" class="filled-in" checked="checked" disabled="disabled" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="VersionCancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertAndUpdateVersionClick()">Save</a>
+            </div>
+        </div>
+        <!--Create Version popups close-->
+
+
+        <!--Edit Version popups start-->
+        <div id="edit_Version" class="modal modal-fixed-footer">
+            <div class="modal-content">
+
+                <div class="row">
+                    <h5>Edit Version</h5>
+                    <form class="">
+                        <div class="row">
+
+                            <div class="input-field">
+                                <input id="version_name1" type="text" class="validate" data-ng-model="VersionModel['VersionName']" maxlength="50">
+                                <label ng-class="{'active': VersionModel.VersionName }" for="version_name1">Version Name<span class="mandatoryfields">*</span></label>
+                            </div>
+                            <div class="input-field">
+                                <input id="version_email1" type="text" data-ng-model="VersionModel['VersionDescription']" maxlength="100">
+                                <label ng-class="{'active':VersionModel.VersionDescription }" for="version_email1">Version Description</label>
+                            </div>
+
+                            @*<div class="input-field">
+                                <select data-ng-model="VersionModel['FromVersionID']" disabled="disabled"
+                                    data-ng-options="version.VersionID as version.VersionName for version in GetAllVersionsListModel" material-select watch>
+                                    <option value="" disabled="disabled">Choose</option>
+                                </select>
+                                <label for="module">From Version<span class="mandatoryfields">*</span></label>
+                            </div>*@
+
+                            <div class="row">
+                                <label>
+                                    <input type="checkbox" class="filled-in" data-ng-model="VersionModel['Status']" />
+                                    <span>Status</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="" class="modal-close waves-effect waves-red btn-flat" data-ng-click="VersionCancelClick()">Cancel</a>
+                <a href="" class="waves-effect waves-green btn-flat" data-ng-click="InsertAndUpdateVersionClick()">Update</a>
+            </div>
+        </div>
+        <!--Edit Version popups close-->
+
+
+    </div>
+
+    @Html.Hidden("GetAllVersions", @Url.Action("GetAllVersions", "Admin"))
+    @Html.Hidden("GetActiveVersions", @Url.Action("GetActiveVersions", "Admin"))
+    @Html.Hidden("InsertAndUpdateVersion", @Url.Action("InsertAndUpdateVersion", "Admin"))
+    @Html.Hidden("UpdateVersionToDefault", @Url.Action("UpdateVersionToDefault", "Admin"))
+    @Html.Hidden("GetVersions", @Url.Action("GetVersions", "Admin"))
+
+    @Html.Hidden("CheckSession", @Url.Action("CheckSession", "Login"))
+    @Html.Hidden("Logout", @Url.Action("Logout", "Login"))
+
+</div>
+

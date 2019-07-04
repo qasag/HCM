@@ -1,0 +1,10 @@
+C:\Users\sprvtec-14\Desktop\HCM\HCM Code\HCM\HCM.Models\bin\Release\HCM.Models.dll
+C:\Users\sprvtec-14\Desktop\HCM\HCM Code\HCM\HCM.Models\bin\Release\HCM.Models.pdb
+C:\Users\sprvtec-14\Desktop\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.dll
+C:\Users\sprvtec-14\Desktop\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.pdb
+C:\Users\sprvtec-14\Desktop\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.csprojResolveAssemblyReference.cache
+E:\HCM\HCM Code\HCM\HCM.Models\bin\Release\HCM.Models.dll
+E:\HCM\HCM Code\HCM\HCM.Models\bin\Release\HCM.Models.pdb
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.csprojResolveAssemblyReference.cache
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.dll
+E:\HCM\HCM Code\HCM\HCM.Models\obj\Release\HCM.Models.pdb
